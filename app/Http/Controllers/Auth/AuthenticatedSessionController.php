@@ -33,6 +33,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $userRole = $request->user()->getRoleNames();
+        if ($userRole->contains('Team Member')) {
+            return redirect()->route('team.member.home');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

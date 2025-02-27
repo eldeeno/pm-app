@@ -6,8 +6,10 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import {usePage} from "@inertiajs/vue3";
 
 const showingNavigationDropdown = ref(false);
+const page = usePage();
 </script>
 
 <template>
@@ -33,12 +35,36 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
+                                <template v-if="page.props.auth.user.roles[0] !== 'Team Member'">
+                                    <NavLink
+                                        :href="route('dashboard')"
+                                        :active="route().current('dashboard')"
+
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                    <NavLink
+                                        :href="route('projects.index')"
+                                        :active="route().current('projects.*') ||
+                                        route().current('project.tasks.*') || route().current('project.*')"
+                                    >
+                                        Projects
+                                    </NavLink>
+                                    <NavLink
+                                        v-if="page.props.auth.user.roles[0] === 'Admin'"
+                                        :href="route('users.index')"
+                                        :active="route().current('users.*')"
+                                    >
+                                        Users
+                                    </NavLink>
+                                </template>
+                                    <NavLink
+                                        v-if="page.props.auth.user.roles[0] === 'Team Member'"
+                                        :href="route('team.member.home')"
+                                        :active="route().current('team.member.*') || route().current('task.*')"
+                                    >
+                                        Tasks
+                                    </NavLink>
                             </div>
                         </div>
 
@@ -140,11 +166,27 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="space-y-1 pb-3 pt-2">
+                        <template v-if="page.props.auth.user.roles[0] !== 'Team Member'">
+                            <ResponsiveNavLink
+                                :href="route('dashboard')"
+                                :active="route().current('dashboard')"
+                            >
+                                Dashboard
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('projects.index')"
+                                :active="route().current('projects.*') ||
+                                route().current('project.tasks.*') || route().current('project.*')"
+                            >
+                                Projects
+                            </ResponsiveNavLink>
+                        </template>
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            v-if="page.props.auth.user.roles[0] === 'Team Member'"
+                            :href="route('team.member.home')"
+                            :active="route().current('team.member.*') || route().current('task.*')"
                         >
-                            Dashboard
+                            Tasks
                         </ResponsiveNavLink>
                     </div>
 

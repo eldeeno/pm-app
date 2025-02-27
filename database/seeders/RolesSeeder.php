@@ -18,15 +18,17 @@ class RolesSeeder extends Seeder
         $manager = Role::create(['name' => 'Project Manager']);
         $member = Role::create(['name' => 'Team Member']);
 
+        Permission::create(['name' => 'store projects']);
         Permission::create(['name' => 'view projects']);
         Permission::create(['name' => 'edit projects']);
         Permission::create(['name' => 'delete projects']);
         Permission::create(['name' => 'view tasks']);
+        Permission::create(['name' => 'store tasks']);
         Permission::create(['name' => 'edit tasks']);
         Permission::create(['name' => 'delete tasks']);
 
         $admin->givePermissionTo(Permission::all());
-        $manager->givePermissionTo(['view projects', 'edit projects', 'view tasks']);
+        $manager->givePermissionTo(['view projects', 'edit projects', 'view tasks', 'store tasks']);
         $member->givePermissionTo(['view projects', 'view tasks']);
     }
 }
