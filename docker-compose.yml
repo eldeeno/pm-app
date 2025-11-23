@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
-    container_name: laravel-app
+    container_name: laravel-pm-app
     volumes:
       - ./src:/var/www/html
     depends_on:
@@ -21,17 +21,6 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
-    networks:
-      - laravel
-
-  node:
-    build:
-      context: ./src
-      dockerfile: ../docker/node/Dockerfile
-    container_name: vite-build
-    volumes:
-      - ./src:/app
-    command: [ "npm", "run", "build" ]
     networks:
       - laravel
 
