@@ -2,12 +2,26 @@ services:
   app:
     build:
       context: .
-      dockerfile: docker/php/Dockerfile
-    container_name: laravel-app
+      dockerfile: docker/common/php-fpm/Dockerfile
+    container_name: laravel-pm-app
     volumes:
       - ./src:/var/www/html
     depends_on:
       - db
+    networks:
+      - laravel
+
+  vite:
+    image: node:18
+    container_name: pm-vite
+    working_dir: /var/www/html
+    command: [ "npm", "run", "dev" ]
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
     networks:
       - laravel
 
@@ -18,20 +32,9 @@ services:
       - "8081:80"
     volumes:
       - ./src:/var/www/html
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/development/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - app
-    networks:
-      - laravel
-
-  node:
-    build:
-      context: ./src
-      dockerfile: ../docker/node/Dockerfile
-    container_name: vite-build
-    volumes:
-      - ./src:/app
-    command: [ "npm", "run", "build" ]
     networks:
       - laravel
 
